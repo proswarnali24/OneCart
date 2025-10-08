@@ -1,4 +1,4 @@
-# 🛒 OneCart - MERN eCommerce App
+# 🛒 OneCart - MERN eCommerce Website
 
 **OneCart** is an AI powered full-stack eCommerce application built with **MongoDB, Express.js, React.js, and Node.js (MERN)**.  
 It includes user authentication, product listings, cart, checkout, and admin features.
