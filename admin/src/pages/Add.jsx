@@ -9,10 +9,10 @@ import { toast } from 'react-toastify'
 import Loading from '../component/Loading'
 
 function Add() {
-  let [image1,setImage1] = useState(false)
-  let [image2,setImage2] = useState(false)
-  let [image3,setImage3] = useState(false)
-  let [image4,setImage4] = useState(false)
+  let [image1,setImage1] = useState(null)
+  let [image2,setImage2] = useState(null)
+  let [image3,setImage3] = useState(null)
+  let [image4,setImage4] = useState(null)
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [category, setCategory] = useState("Men")
@@ -23,9 +23,25 @@ function Add() {
   const [loading,setLoading] = useState(false)
   let {serverUrl} = useContext(authDataContext)
 
+
   const handleAddProduct = async (e) => {
     setLoading(true)
     e.preventDefault()
+    
+    // Validate images
+    if (!image1 || !image2 || !image3 || !image4) {
+      toast.error("Please upload all 4 images")
+      setLoading(false)
+      return
+    }
+
+    // Validate sizes
+    if (sizes.length === 0) {
+      toast.error("Please select at least one size")
+      setLoading(false)
+      return
+    }
+
     try {
       let formData = new FormData()
       formData.append("name",name)
@@ -40,7 +56,12 @@ function Add() {
       formData.append("image3",image3)
       formData.append("image4",image4)
 
-      let result = await axios.post(serverUrl + "/api/product/addproduct" , formData, {withCredentials:true} )
+      let result = await axios.post(serverUrl + "/api/product/addproduct" , formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      } )
 
       console.log(result.data)
       toast.success("ADD Product Successfully")
@@ -48,22 +69,33 @@ function Add() {
 
       if(result.data){
           setName("")
-      setDescription("")
-      setImage1(false)
-      setImage2(false)
-      setImage3(false)
-      setImage4(false)
-      setPrice("")
-      setBestSeller(false)
-      setCategory("Men")
-      setSubCategory("TopWear")
+          setDescription("")
+          setImage1(null)
+          setImage2(null)
+          setImage3(null)
+          setImage4(null)
+          setPrice("")
+          setBestSeller(false)
+          setCategory("Men")
+          setSubCategory("TopWear")
+          setSizes([])
+          // Reset file inputs
+          const input1 = document.getElementById('image1')
+          const input2 = document.getElementById('image2')
+          const input3 = document.getElementById('image3')
+          const input4 = document.getElementById('image4')
+          if(input1) input1.value = ''
+          if(input2) input2.value = ''
+          if(input3) input3.value = ''
+          if(input4) input4.value = ''
       }
 
       
     } catch (error) {
        console.log(error)
        setLoading(false)
-       toast.error("Add Product Failed")
+       const errorMessage = error.response?.data?.message || error.message || "Add Product Failed"
+       toast.error(errorMessage)
     }
 
     
@@ -83,28 +115,63 @@ function Add() {
         <p className='text-[20px] md:text-[25px]  font-semibold'>
           Upload Images
         </p>
-        <div className='w-[100%] h-[100%] flex items-center justify-start '>
-          <label htmlFor="image1" className=' w-[65px] h-[65px] md:w-[100px] md:h-[100px] cursor-pointer hover:border-[#46d1f7]'>
-            <img src={!image1 ? upload : URL.createObjectURL(image1)} alt="" className='w-[80%] h-[80%] rounded-lg shadow-2xl hover:border-[#1d1d1d] border-[2px]' />
-            <input type="file" id='image1' hidden onChange={(e)=>setImage1(e.target.files[0])} required />
-
-          </label>
-          <label htmlFor="image2" className=' w-[65px] h-[65px] md:w-[100px] md:h-[100px] cursor-pointer hover:border-[#46d1f7]'>
-            <img src={!image2 ? upload : URL.createObjectURL(image2)} alt="" className='w-[80%] h-[80%] rounded-lg shadow-2xl hover:border-[#1d1d1d] border-[2px]' />
-            <input type="file" id='image2' hidden onChange={(e)=>setImage2(e.target.files[0])} required />
-
-          </label>
-          <label htmlFor="image3" className=' w-[65px] h-[65px] md:w-[100px] md:h-[100px] cursor-pointer hover:border-[#46d1f7]'>
-            <img src={!image3 ? upload : URL.createObjectURL(image3)} alt="" className='w-[80%] h-[80%] rounded-lg shadow-2xl hover:border-[#1d1d1d] border-[2px]' />
-            <input type="file" id='image3' hidden onChange={(e)=>setImage3(e.target.files[0])} required />
-
-          </label>
-          <label htmlFor="image4" className=' w-[65px] h-[65px] md:w-[100px] md:h-[100px] cursor-pointer hover:border-[#46d1f7]'>
-            <img src={!image4 ? upload : URL.createObjectURL(image4)} alt="" className='w-[80%] h-[80%] rounded-lg shadow-2xl hover:border-[#1d1d1d] border-[2px]' />
-            <input type="file" id='image4' hidden onChange={(e)=>setImage4(e.target.files[0])} required/>
-
-          </label>
-         
+        <div className='w-[100%] h-[100%] flex items-center justify-start gap-[10px] flex-wrap'>
+          <div className='relative w-[65px] h-[65px] md:w-[100px] md:h-[100px]'>
+            <label htmlFor="image1" className='absolute inset-0 w-full h-full cursor-pointer flex items-center justify-center border-2 border-dashed border-gray-500 rounded-lg hover:border-[#46d1f7] z-10'>
+              <img src={!image1 ? upload : URL.createObjectURL(image1)} alt="Upload 1" className='w-[80%] h-[80%] rounded-lg shadow-2xl object-cover pointer-events-none' />
+            </label>
+            <input 
+              type="file" 
+              id="image1"
+              accept="image/*" 
+              className='absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20'
+              onChange={(e)=>{
+                console.log('Image1 selected:', e.target.files?.[0])
+                if(e.target.files && e.target.files[0]) setImage1(e.target.files[0])
+              }}
+              onClick={(e)=>{console.log('Image1 input clicked')}}
+              required 
+            />
+          </div>
+          <div className='relative w-[65px] h-[65px] md:w-[100px] md:h-[100px]'>
+            <label htmlFor="image2" className='absolute inset-0 w-full h-full cursor-pointer flex items-center justify-center border-2 border-dashed border-gray-500 rounded-lg hover:border-[#46d1f7] z-10'>
+              <img src={!image2 ? upload : URL.createObjectURL(image2)} alt="Upload 2" className='w-[80%] h-[80%] rounded-lg shadow-2xl object-cover' />
+            </label>
+            <input 
+              type="file" 
+              id="image2"
+              accept="image/*" 
+              className='absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20'
+              onChange={(e)=>{if(e.target.files && e.target.files[0]) setImage2(e.target.files[0])}}
+              required 
+            />
+          </div>
+          <div className='relative w-[65px] h-[65px] md:w-[100px] md:h-[100px]'>
+            <label htmlFor="image3" className='absolute inset-0 w-full h-full cursor-pointer flex items-center justify-center border-2 border-dashed border-gray-500 rounded-lg hover:border-[#46d1f7] z-10'>
+              <img src={!image3 ? upload : URL.createObjectURL(image3)} alt="Upload 3" className='w-[80%] h-[80%] rounded-lg shadow-2xl object-cover' />
+            </label>
+            <input 
+              type="file" 
+              id="image3"
+              accept="image/*" 
+              className='absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20'
+              onChange={(e)=>{if(e.target.files && e.target.files[0]) setImage3(e.target.files[0])}}
+              required 
+            />
+          </div>
+          <div className='relative w-[65px] h-[65px] md:w-[100px] md:h-[100px]'>
+            <label htmlFor="image4" className='absolute inset-0 w-full h-full cursor-pointer flex items-center justify-center border-2 border-dashed border-gray-500 rounded-lg hover:border-[#46d1f7] z-10'>
+              <img src={!image4 ? upload : URL.createObjectURL(image4)} alt="Upload 4" className='w-[80%] h-[80%] rounded-lg shadow-2xl object-cover' />
+            </label>
+            <input 
+              type="file" 
+              id="image4"
+              accept="image/*" 
+              className='absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20'
+              onChange={(e)=>{if(e.target.files && e.target.files[0]) setImage4(e.target.files[0])}}
+              required 
+            />
+          </div>
         </div>
 
        </div>

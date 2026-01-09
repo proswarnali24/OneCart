@@ -12,12 +12,14 @@ import { MdContacts } from "react-icons/md";
 import axios from 'axios';
 import { authDataContext } from '../context/authContext';
 import { shopDataContext } from '../context/ShopContext';
+import { ThemeContext } from '../context/ThemeContext';
 function Nav() {
     let {getCurrentUser , userData} = useContext(userDataContext)
     let {serverUrl} = useContext(authDataContext)
     let {showSearch,setShowSearch,search,setSearch,getCartCount} = useContext(shopDataContext)
     let [showProfile,setShowProfile] = useState(false)
     let navigate = useNavigate()
+    const { theme, toggleTheme } = useContext(ThemeContext)
 
 
     const handleLogout = async () => {
@@ -32,11 +34,11 @@ function Nav() {
         
     }
   return (
-    <div className='w-[100vw] h-[70px] bg-[#ecfafaec] z-10 fixed top-0 flex  items-center justify-between px-[30px] shadow-md shadow-black '>
+  <div className={`w-[100vw] h-[70px] z-10 fixed top-0 flex items-center justify-between px-[30px] shadow-md shadow-black ${theme === 'dark' ? 'bg-[#050505] text-white' : 'bg-[#ecfafaec] text-black'}`}>
 
         <div className='w-[20%] lg:w-[30%] flex items-center justify-start   gap-[10px] '>
             <img src={logo} alt="" className='w-[30px]' />
-            <h1 className='text-[25px] text-[black] font-sans '>OneCart</h1>
+            <h1 className='text-[25px] font-sans '>OneCart</h1>
         </div>
         <div className='w-[50%] lg:w-[40%] hidden md:flex'>
             <ul className='flex items-center justify-center gap-[19px] text-[white] '>
@@ -46,12 +48,18 @@ function Nav() {
                 <li className='text-[15px] hover:bg-slate-500 cursor-pointer bg-[#000000c9] py-[10px] px-[20px] rounded-2xl' onClick={()=>navigate("/contact")}>CONTACT</li>
             </ul>
         </div>
-        <div className='w-[30%] flex items-center justify-end gap-[20px]'>
-         {!showSearch && <IoSearchCircleOutline  className='w-[38px] h-[38px] text-[#000000]  cursor-pointer' onClick={()=>{setShowSearch(prev=>!prev);navigate("/collection")}}/>}
-           {showSearch && <IoSearchCircleSharp  className='w-[38px] h-[38px] text-[#000000]  cursor-pointer' onClick={()=>setShowSearch(prev=>!prev)}/>}
-         {!userData && <FaCircleUser className='w-[29px] h-[29px] text-[#000000]  cursor-pointer' onClick={()=>setShowProfile(prev=>!prev)}/>}
+        <div className='w-[30%] flex items-center justify-end gap-[16px]'>
+         {!showSearch && <IoSearchCircleOutline  className={`w-[38px] h-[38px] cursor-pointer ${theme === 'dark' ? 'text-white' : 'text-black'}`} onClick={()=>{setShowSearch(prev=>!prev);navigate("/collection")}}/>}
+           {showSearch && <IoSearchCircleSharp  className={`w-[38px] h-[38px] cursor-pointer ${theme === 'dark' ? 'text-white' : 'text-black'}`} onClick={()=>setShowSearch(prev=>!prev)}/>}
+         <button
+            onClick={toggleTheme}
+            className='text-[12px] px-3 py-1 rounded-full border border-gray-400/60 bg-black text-white hover:bg-gray-800 transition hidden md:inline-block'
+          >
+            {theme === 'dark' ? 'Light' : 'Dark'}
+          </button>
+         {!userData && <FaCircleUser className={`w-[29px] h-[29px] cursor-pointer ${theme === 'dark' ? 'text-white' : 'text-black'}`} onClick={()=>setShowProfile(prev=>!prev)}/>}
          {userData && <div className='w-[30px] h-[30px] bg-[#080808] text-[white] rounded-full flex items-center justify-center cursor-pointer' onClick={()=>setShowProfile(prev=>!prev)}>{userData?.name.slice(0,1)}</div>}
-         <MdOutlineShoppingCart className='w-[30px] h-[30px] text-[#000000]  cursor-pointer hidden md:block' onClick={()=>navigate("/cart")}/>
+         <MdOutlineShoppingCart className={`w-[30px] h-[30px] cursor-pointer hidden md:block ${theme === 'dark' ? 'text-white' : 'text-black'}`} onClick={()=>navigate("/cart")}/>
          <p className='absolute w-[18px] h-[18px] items-center  justify-center bg-black px-[5px] py-[2px] text-white  rounded-full text-[9px] top-[10px] right-[23px] hidden md:block'>{getCartCount()}</p>
         </div>
        {showSearch && <div className='w-[100%]  h-[80px] bg-[#d8f6f9dd] absolute top-[100%] left-0 right-0 flex items-center justify-center '>
