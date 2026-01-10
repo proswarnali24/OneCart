@@ -3,7 +3,7 @@ import { createContext } from 'react'
 export const authDataContext= createContext()
 function AuthContext({children}) {
     // Backend API base URL (matches PORT in backend/.env)
-    let serverUrl = "http://localhost:8000"
+    let serverUrl = "https://onecart-backend-nioc.onrender.com"
 
     let value = {
        serverUrl
@@ -18,3 +18,4 @@ function AuthContext({children}) {
 }
 
 export default AuthContext
+
