@@ -11,6 +11,7 @@ import axios from 'axios';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, provider } from '../../utils/Firebase';
 import { userDataContext } from '../context/UserContext';
+import { toast } from 'react-toastify';
 import Loading from '../component/Loading';
 
 function Login() {
@@ -39,6 +40,7 @@ function Login() {
         } catch (error) {
             console.log(error)
             toast.error("User Login Failed")
+            setLoading(false)
         }
     }
      const googlelogin = async () => {

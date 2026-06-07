@@ -10,7 +10,7 @@ import { IoMdHome } from "react-icons/io";
 import { HiOutlineCollection } from "react-icons/hi";
 import { MdContacts } from "react-icons/md";
 import axios from 'axios';
-import { authDataContext } from '../context/AuthContext';
+import { authDataContext } from '../context/authContext';
 import { shopDataContext } from '../context/ShopContext';
 import { ThemeContext } from '../context/ThemeContext';
 function Nav() {
@@ -92,4 +92,3 @@ function Nav() {
 }
 
 export default Nav
-

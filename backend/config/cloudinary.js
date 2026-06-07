@@ -1,6 +1,12 @@
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs'
 
+const removeLocalFile = (filePath) => {
+    if(filePath && fs.existsSync(filePath)){
+        fs.unlinkSync(filePath)
+    }
+}
+
 
 const uploadOnCloudinary = async (filePath) => {
     cloudinary.config({ 
@@ -14,13 +20,13 @@ const uploadOnCloudinary = async (filePath) => {
     }
     const uploadResult = await cloudinary.uploader.upload
     (filePath)
-    fs.unlinkSync(filePath)
+    removeLocalFile(filePath)
     return uploadResult.secure_url
 
     
         
     } catch (error) {
-        fs.unlinkSync(filePath)
+        removeLocalFile(filePath)
         console.log(error)
     }
     
