@@ -4,10 +4,19 @@ import razorpay from 'razorpay'
 import dotenv from 'dotenv'
 dotenv.config()
 const currency = 'inr'
-const razorpayInstance = new razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET
-})
+let razorpayInstance = null;
+try {
+    if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+        razorpayInstance = new razorpay({
+            key_id: process.env.RAZORPAY_KEY_ID,
+            key_secret: process.env.RAZORPAY_KEY_SECRET
+        })
+    } else {
+        console.warn("RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is missing. Razorpay integrations will not be functional.");
+    }
+} catch (error) {
+    console.error("Razorpay initialization error:", error);
+}
 
 // for User
 export const placeOrder = async (req,res) => {
@@ -41,6 +50,9 @@ export const placeOrder = async (req,res) => {
 
 export const placeOrderRazorpay = async (req,res) => {
     try {
+        if (!razorpayInstance) {
+            return res.status(400).json({message: 'Razorpay payment is not configured on this server.'})
+        }
         
          const {items , amount , address} = req.body;
          const userId = req.userId;
@@ -79,6 +91,9 @@ export const placeOrderRazorpay = async (req,res) => {
 
 export const verifyRazorpay = async (req,res) =>{
     try {
+        if (!razorpayInstance) {
+            return res.status(400).json({message: 'Razorpay payment is not configured on this server.'})
+        }
         const userId = req.userId
         const {razorpay_order_id} = req.body
         const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id)

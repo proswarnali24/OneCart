@@ -110,7 +110,7 @@ function ShopContext({children}) {
             totalCount += cartItem[items][item]
           }
         } catch (error) {
-
+          console.error(error)
         }
       }
     }
@@ -127,7 +127,7 @@ function ShopContext({children}) {
             totalAmount += itemInfo.price * cartItem[items][item];
           }
         } catch (error) {
-
+          console.error(error)
         }
       }
     }

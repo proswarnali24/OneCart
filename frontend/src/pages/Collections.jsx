@@ -51,7 +51,7 @@ function Collections() {
     }
 
 
-    const sortProducts = (e)=>{
+    const sortProducts = ()=>{
         let fbCopy = filterProduct.slice()
 
         switch(sortType){
