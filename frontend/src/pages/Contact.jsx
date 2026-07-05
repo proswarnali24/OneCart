@@ -1,33 +1,56 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Title from '../component/Title'
 import contact from "../assets/contact.jpg"
 import NewLetterBox from '../component/NewLetterBox'
+import { ThemeContext } from '../context/ThemeContext'
 
 function Contact() {
+  const { theme } = useContext(ThemeContext)
+
   return (
-    <div className='w-[99vw] min-h-[100vh] flex items-center justify-center flex-col  bg-gradient-to-l from-[#141414] to-[#0c2025] gap-[50px] pt-[80px]'>
-      <Title  text1={'CONTACT'} text2={'US'}/>
-      <div className='w-[100%]  flex items-center justify-center flex-col lg:flex-row'>
-        <div className='lg:w-[50%] w-[100%] flex items-center justify-center '>
-          <img src={contact} alt=""  className='lg:w-[70%] w-[80%] shadow-md shadow-black rounded-sm'/>
+    <div className={`w-full min-h-screen flex items-center justify-center flex-col gap-12 pt-24 transition-all-300 ${
+      theme === 'dark' ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'
+    }`}>
+      {/* Decorative blobs */}
+      <div className="glowing-blob bg-indigo-500/10 w-96 h-96 top-[10%] right-[10%]"></div>
+      <div className="glowing-blob bg-cyan-500/10 w-96 h-96 bottom-[10%] left-[10%]"></div>
+
+      <Title text1={'CONTACT'} text2={'US'}/>
+      
+      {/* Contact Content block */}
+      <div className='w-full max-w-7xl px-6 md:px-12 flex items-center justify-center flex-col lg:flex-row gap-8 z-10'>
+        <div className='lg:w-1/2 w-full flex items-center justify-center'>
+          <img src={contact} alt="Contact Us" className='w-full max-w-md rounded-2xl shadow-xl border border-slate-200/20' />
         </div>
-        <div className='lg:w-[50%] w-[80%] flex items-start justify-center gap-[20px]  flex-col mt-[20px] lg:mt-[0px]'>
-        <p className='lg:w-[80%] w-[100%] text-[white] font-bold lg:text-[18px] text-[15px]'>Our Store</p>
-        <p className='lg:w-[80%] w-[100%] text-[white] md:text-[16px] text-[13px]'>
-          <p>12345 Random Statiom</p>
-          <p>random city , state , India</p>
-        </p>
-        <p className='lg:w-[80%] w-[100%] text-[white] md:text-[16px] text-[13px]'>
-          <p>tel: +91-9876543210</p>
-          <p>Email: admin@onecart.com</p>
-        </p>
-        <p className='lg:w-[80%] w-[100%] text-[15px] text-[white] lg:text-[18px] mt-[10px] font-bold'>Careers at OneCart</p>
-        <p className='lg:w-[80%] w-[100%] text-[white] md:text-[16px] text-[13px]'>Learn more about our teams and job openings</p>
-        <button className='px-[30px] py-[20px] flex items-center justify-center text-[white] bg-transparent border active:bg-slate-600 rounded-md' >Explore Jobs</button>
+        <div className='lg:w-1/2 w-full flex flex-col gap-6 items-start justify-center'>
+          <div className="p-6 rounded-2xl border glass-panel w-full max-w-md">
+            <h3 className='text-lg font-bold tracking-tight text-indigo-500 mb-3'>Our Store</h3>
+            <div className={`text-[15px] flex flex-col gap-1 ${theme === 'dark' ? 'text-slate-350' : 'text-slate-650'}`}>
+              <p>12345 Random Station</p>
+              <p>Random City, State, India</p>
+            </div>
+            
+            <div className={`text-[15px] mt-4 flex flex-col gap-1 ${theme === 'dark' ? 'text-slate-350' : 'text-slate-650'}`}>
+              <p>Tel: +91-9876543210</p>
+              <p>Email: admin@solivana.com</p>
+            </div>
+          </div>
+
+          <div className="p-6 rounded-2xl border glass-panel w-full max-w-md flex flex-col gap-4">
+            <div>
+              <h3 className='text-lg font-bold tracking-tight text-indigo-500'>Careers at Solivana</h3>
+              <p className={`text-sm mt-1 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                Learn more about our teams and job openings.
+              </p>
+            </div>
+            <button className='w-fit px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-bold rounded-xl text-sm transition-all duration-200 hover:scale-105 shadow-md cursor-pointer'>
+              Explore Jobs
+            </button>
+          </div>
         </div>
       </div>
+
       <NewLetterBox/>
-      
     </div>
   )
 }

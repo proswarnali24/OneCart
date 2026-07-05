@@ -1,18 +1,25 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import LatestCollection from '../component/LatestCollection'
 import BestSeller from '../component/BestSeller'
+import { ThemeContext } from '../context/ThemeContext'
 
 function Product() {
-  return (
-    <div className='w-[100vw] min-h-[100vh] bg-gradient-to-l from-[#141414] to-[#0c2025] flex items-center justify-start flex-col py-[20px]'>
+  const { theme } = useContext(ThemeContext)
 
-        <div className='w-[100%] min-h-[70px] flex items-center justify-center gap-[10px]  flex-col '>
-            <LatestCollection/>
-        </div>
-        <div className='w-[100%] min-h-[70px] flex items-center justify-center gap-[10px]  flex-col '>
-            <BestSeller/>
-        </div>
-      
+  return (
+    <div className={`w-full min-h-screen flex items-center justify-start flex-col py-12 transition-all-300 ${
+      theme === 'dark' ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'
+    }`}>
+      {/* Decorative blobs for depth */}
+      <div className="glowing-blob bg-indigo-500/10 w-96 h-96 top-[-10%] left-[-10%]"></div>
+      <div className="glowing-blob bg-cyan-500/10 w-96 h-96 bottom-[-10%] right-[-10%]"></div>
+
+      <div className='w-full min-h-[70px] flex items-center justify-center gap-6 flex-col z-10'>
+        <LatestCollection/>
+      </div>
+      <div className='w-full min-h-[70px] flex items-center justify-center gap-6 flex-col mt-12 z-10'>
+        <BestSeller/>
+      </div>
     </div>
   )
 }

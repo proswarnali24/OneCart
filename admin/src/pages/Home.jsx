@@ -1,51 +1,67 @@
-import React from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import Nav from '../component/Nav'
 import Sidebar from '../component/Sidebar'
-import { useState } from 'react'
-import { useContext } from 'react'
 import { authDataContext } from '../context/AuthContext'
-import { useEffect } from 'react'
 import axios from 'axios'
+import { ThemeContext } from '../context/ThemeContext'
 
 function Home() {
     const [totalProducts, setTotalProducts] = useState(0)
-  const [totalOrders, setTotalOrders] = useState(0)
-  
-  const { serverUrl } = useContext(authDataContext)
+    const [totalOrders, setTotalOrders] = useState(0)
+    const { serverUrl } = useContext(authDataContext)
+    const { theme } = useContext(ThemeContext)
 
- const fetchCounts = async () => {
-    try {
-      const products = await axios.get(`${serverUrl}/api/product/list`, {} ,{withCredentials:true})
-      setTotalProducts(products.data.length)
+    const fetchCounts = async () => {
+        try {
+            const products = await axios.get(`${serverUrl}/api/product/list`, { withCredentials: true })
+            setTotalProducts(products.data.length)
 
-      const orders = await axios.post(`${serverUrl}/api/order/list`, {} ,{withCredentials:true})
-      setTotalOrders(orders.data.length)
-    } catch (err) {
-      console.error("Failed to fetch counts", err)
+            const orders = await axios.post(`${serverUrl}/api/order/list`, {}, { withCredentials: true })
+            setTotalOrders(orders.data.length)
+        } catch (err) {
+            console.error("Failed to fetch counts", err)
+        }
     }
-  }
 
-   useEffect(() => {
-    fetchCounts()
-  }, [])
-  return (
-   
-    <div className='w-[100vw] h-[100vh] bg-gradient-to-l from-[#141414] to-[#0c2025] text-[white] relative'>
-       <Nav/>
-       <Sidebar/>
+    useEffect(() => {
+        fetchCounts()
+    }, [])
 
-       <div className='w-[70vw] h-[100vh] absolute left-[25%] flex items-Start justify-start flex-col  gap-[40px] py-[100px]'>
-         <h1 className='text-[35px] text-[#afe2f2]'>OneCart Admin Panel</h1>
-         <div className='flex items-center justify-start gap-[50px] flex-col md:flex-row'>
-          <div  className='text-[#dcfafd] w-[400px] max-w-[90%] h-[200px] bg-[#0000002e] flex items-center justify-center flex-col gap-[20px] rounded-lg shadow-sm shadow-black backdrop:blur-lg  md:text-[25px] text-[20px] border-[1px] border-[#969595]'>Total No. of Products : <span className='px-[20px] py-[10px] bg-[#030e11] rounded-lg flex items-center justify-center border-[1px] border-[#969595]'>{totalProducts}</span></div>
-          <div  className='text-[#dcfafd] w-[400px] max-w-[90%] h-[200px] bg-[#0000002e] flex items-center justify-center flex-col gap-[20px] rounded-lg shadow-sm shadow-black backdrop:blur-lg  md:text-[25px] text-[20px] border-[1px] border-[#969595]'>Total No. of Orderss : <span className='px-[20px] py-[10px] bg-[#030e11] rounded-lg flex items-center justify-center border-[1px] border-[#969595]'>{totalOrders}</span></div>
+    return (
+        <div className={`w-full min-h-screen transition-all-300 relative ${
+            theme === 'dark' ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'
+        }`}>
+            <Nav />
+            <div className="flex pt-[70px]">
+                <Sidebar />
+                <div className='flex-1 p-8 md:p-12 flex flex-col gap-8 z-10'>
+                    <h1 className='text-3xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-500 to-cyan-400 bg-clip-text text-transparent w-fit'>
+                        Solivana Admin Panel
+                    </h1>
+                    
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl'>
+                        <div className="p-8 rounded-2xl border glass-panel flex flex-col items-center justify-center gap-4 hover:scale-[102%] transition-transform duration-300">
+                            <span className={`text-lg font-bold tracking-tight ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+                                Total Products
+                            </span>
+                            <span className="text-4xl font-black text-indigo-500">
+                                {totalProducts}
+                            </span>
+                        </div>
 
-         </div>
-       </div>
-
-      
-    </div>
-  )
+                        <div className="p-8 rounded-2xl border glass-panel flex flex-col items-center justify-center gap-4 hover:scale-[102%] transition-transform duration-300">
+                            <span className={`text-lg font-bold tracking-tight ${theme === 'dark' ? 'text-slate-300' : 'text-slate-650'}`}>
+                                Total Orders
+                            </span>
+                            <span className="text-4xl font-black text-indigo-500">
+                                {totalOrders}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
 }
 
 export default Home
