@@ -14,7 +14,7 @@ import { authDataContext } from '../context/AuthContext';
 import { shopDataContext } from '../context/ShopContext';
 import { ThemeContext } from '../context/ThemeContext';
 function Nav() {
-    let { userData } = useContext(userDataContext)
+    let { userData, setUserData } = useContext(userDataContext)
     let {serverUrl} = useContext(authDataContext)
     let {showSearch,setShowSearch,search,setSearch,getCartCount} = useContext(shopDataContext)
     let [showProfile,setShowProfile] = useState(false)
@@ -26,7 +26,8 @@ function Nav() {
         try {
             const result = await axios.get(serverUrl + "/api/auth/logout" , {withCredentials:true})
             console.log(result.data)
-           
+            localStorage.removeItem("onecart_token")
+            setUserData(null)
             navigate("/login")
         } catch (error) {
             console.log(error)

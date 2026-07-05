@@ -32,6 +32,9 @@ function Registration() {
          const result = await axios.post(serverUrl + '/api/auth/registration',{
             name,email,password
          },{withCredentials:true})
+            if (result.data && result.data.token) {
+                localStorage.setItem("onecart_token", result.data.token)
+            }
             getCurrentUser()
             navigate("/")
             toast.success("User Registration Successful")
@@ -41,6 +44,7 @@ function Registration() {
         } catch (error) {
             console.log(error)
             toast.error("User Registration Failed")
+            setLoading(false)
         }
     }
 
@@ -53,6 +57,9 @@ function Registration() {
 
             const result = await axios.post(serverUrl + "/api/auth/googlelogin" ,{name , email} , {withCredentials:true})
             console.log(result.data)
+            if (result.data && result.data.token) {
+                localStorage.setItem("onecart_token", result.data.token)
+            }
             getCurrentUser()
             navigate("/")
             toast.success("User Registration Successful")
