@@ -17,7 +17,12 @@ let app = express()
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
- origin:["https://onecart-frontendonecart.onrender.com" , "https://onecart-admin-lhso.onrender.com"],
+ origin:[
+   "https://onecart-frontendonecart.onrender.com",
+   "https://onecart-admin-lhso.onrender.com",
+   "https://frontend-psi-three-36.vercel.app",
+   "https://admin-eight-iota-71.vercel.app"
+ ],
  credentials:true
 }))
 
