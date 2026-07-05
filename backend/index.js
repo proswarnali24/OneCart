@@ -17,13 +17,25 @@ let app = express()
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
- origin:[
-   "https://onecart-frontendonecart.onrender.com",
-   "https://onecart-admin-lhso.onrender.com",
-   "https://frontend-psi-three-36.vercel.app",
-   "https://admin-eight-iota-71.vercel.app"
- ],
- credentials:true
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    const allowedOrigins = [
+      "https://onecart-frontendonecart.onrender.com",
+      "https://onecart-admin-lhso.onrender.com",
+      "https://frontend-psi-three-36.vercel.app",
+      "https://admin-eight-iota-71.vercel.app"
+    ];
+    if (
+      allowedOrigins.includes(origin) || 
+      origin.endsWith(".vercel.app") || 
+      origin.startsWith("http://localhost")
+    ) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
 }))
 
 app.use("/api/auth",authRoutes)
